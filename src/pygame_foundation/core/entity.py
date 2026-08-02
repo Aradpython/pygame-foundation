@@ -1,5 +1,5 @@
 from .constants import WHITE, UPDATE_EVERY_FRAME
-from .debug import debug_and_log
+from pygame_foundation.utils.debug import debug_and_log
 import pygame 
 
 class Entity(pygame.sprite.Sprite):
@@ -43,6 +43,30 @@ class Entity(pygame.sprite.Sprite):
 
     def __str__(self):
         return self.name
+
+    @property
+    def coordinates(self):
+        return self.rect.topleft
+
+    @coordinates.setter
+    def coordinates(self, value):
+        self.rect.topleft = value
+
+    @property
+    def x(self):
+        return self.rect.x
+
+    @x.setter
+    def x(self, value):
+        self.rect.x = value
+
+    @property
+    def y(self):
+        return self.rect.y
+
+    @y.setter
+    def y(self, value):
+        self.rect.y = value
 
     @property
     def world(self):

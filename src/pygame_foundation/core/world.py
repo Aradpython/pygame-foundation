@@ -1,5 +1,5 @@
 from .constants import UPDATE_EVERY_FRAME, WHITE, BLACK, GREEN
-from .debug import debug_and_log
+from pygame_foundation.utils.debug import debug_and_log
 from termcolor import colored
 import pygame
 import random

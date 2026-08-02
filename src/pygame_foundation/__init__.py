@@ -1,8 +1,7 @@
 """Foundational helpers for Pygame projects."""
 
-__version__ = "0.1.0"
+from .core import *
+from .input import *
 
-'''
-pygame
-termcolor
-'''
+__all__ = ['Game', 'Entity', 'World', 'debug_and_log', 'BLACK', 'WHITE', 'GREEN', 'UPDATE_EVERY_FRAME']
+__version__ = "0.1.1"

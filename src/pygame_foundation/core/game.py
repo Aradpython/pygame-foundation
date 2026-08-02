@@ -1,7 +1,9 @@
-from .debug import debug_and_log
+from pygame_foundation.input.manager import InputManager
+from pygame_foundation.utils.debug import debug_and_log
 from .constants import *
 from .world import World
 import pygame
+
 
 class Game:
     ''' A class that acts as a manager for all events in the game '''
@@ -20,8 +22,12 @@ class Game:
 
         self.world = World()
 
+        self.input_manager = InputManager()
+
     def update(self, dt):
         ''' Update the Game '''
+        self.input_manager.update(pygame.event.get())
+
         self.world.update(dt)
 
         pygame.display.update()

@@ -2,7 +2,7 @@
 
 A foundation for building Pygame projects and games.
 
-pygame-foundation is currently in active development. Version 0.1.1 is the initial public release, and additional features are planned for future versions.
+pygame-foundation is currently in active development. Additional features are planned for future versions.
 
 ## Installation
 
@@ -19,6 +19,11 @@ pip install pygame-foundation
 - Visibility control
 - Active/paused states
 - Update intervals
+- Input Manager
+
+## Updates
+- Input Manager
+- Input Bindings
 
 ## Quick Start
 
@@ -43,11 +48,9 @@ game.run()
 
 - Scene system
 - Camera
-- Input manager
 - Asset manager
 - Animation system
 - Timer system
-
 
 ## License
 
