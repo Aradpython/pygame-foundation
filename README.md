@@ -2,7 +2,7 @@
 
 A foundation for building Pygame projects and games.
 
-pygame-foundation is currently in active development. Version 0.1.0 is the initial public release, and additional features are planned for future versions.
+pygame-foundation is currently in active development. Version 0.1.1 is the initial public release, and additional features are planned for future versions.
 
 ## Installation
 
