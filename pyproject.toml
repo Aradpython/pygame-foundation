@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pygame-foundation"
+version = "0.1.0"
+description = "A modern wrapper around Pygame."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+
+authors = [
+    { name = "Arad Rezakhani" }
+]
+
+dependencies = [
+    "pygame>=2.6",
+    "termcolor>=3.1"
+]
+
+keywords = [
+    "pygame",
+    "game",
+    "gamedev",
+    "engine",
+    "framework"
+]
+
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent"
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
