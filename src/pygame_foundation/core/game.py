@@ -24,13 +24,11 @@ class Game:
 
         self.input_manager = InputManager()
 
-    def update(self, dt):
+    def update(self, dt, events):
         ''' Update the Game '''
-        self.input_manager.update(pygame.event.get())
+        self.input_manager.update(events)
 
         self.world.update(dt)
-
-        pygame.display.update()
 
     def draw(self):
         ''' Draw and blit Objects to the screen '''
@@ -45,12 +43,17 @@ class Game:
         self.running = True
         while self.running:
             dt = self.clock.tick(self.fps) / 1000.0
-            for event in pygame.event.get():
+
+            events = pygame.event.get()
+            for event in events:
                 if event.type == pygame.QUIT:
                     self.running = False
 
             self.surface.fill((0, 12, 12))
+
+            self.update(dt, events)
+
             self.draw()
 
-            self.update(dt)
+            pygame.display.update()
         pygame.quit()

@@ -12,41 +12,47 @@ e3 = Entity(500, 180, size=(260, 150), color=(100, 13, 23), layer=0, tags=set(['
 e4 = Entity(300, 400, size=(100, 60), color=(10, 123, 203), layer=0, tags=set(['player', 'stupid']), name='Player 2')
 
 def move_up():
-    e1.y -= 5
-    e2.y -= 5
-    e3.y -= 5
-    e4.y -= 5
+    for entity in world.sprites():
+        entity.y -= 5
 
 def move_down():
-    e1.y += 5
-    e2.y += 5
-    e3.y += 5
-    e4.y += 5
+    for entity in world.sprites():
+        entity.y += 5
 
 def move_right():
-    e1.x += 5
-    e2.x += 5
-    e3.x += 5
-    e4.x += 5
+    for entity in world.sprites():
+        entity.x += 5
 
 def move_left():
-    e1.x -= 5
-    e2.x -= 5
-    e3.x -= 5
-    e4.x -= 5
+    for entity in world.sprites():
+        entity.x -= 5
 
-def go_breserk():
-    e1.coordinates = (random.randint(0, 18)*50, random.randint(0, 13)*50)
-    e2.coordinates = (random.randint(0, 18)*50, random.randint(0, 13)*50)
-    e3.coordinates = (random.randint(0, 18)*50, random.randint(0, 13)*50)
-    e4.coordinates = (random.randint(0, 18)*50, random.randint(0, 13)*50)
+def go_berserk():
+    for entity in world.sprites():
+        entity.coordinates = (random.randint(0, 18)*50, random.randint(0, 13)*50)
+
+def add_entity():
+    x, y = (random.randint(0, 18)*50, random.randint(0, 13)*50)
+    size = (random.randint(1, 3)*50, random.randint(1, 3)*50)
+    color = (random.randint(0, 255), random.randint(0, 255), random.randint(0, 255),)
+    entity = Entity(x, y, size=size, color=color, )
+    world.add(entity)
+
+def remove_entity():
+    if not world.sprites():
+        for i in range(1):
+            add_entity()
+    entity = random.choice(world.sprites())
+    world.remove(entity)
 
 world.add(e4, e2, e3, e1)
-input_manager.add_input_pdown('Up', pygame.K_w, move_up)
-input_manager.add_input_pdown('Right', pygame.K_d, move_right)
-input_manager.add_input_pdown('Down', pygame.K_s, move_down)
-input_manager.add_input_pdown('Left', pygame.K_a, move_left)
-input_manager.add_input_pdown('breserk', pygame.K_SPACE, go_breserk)
+input_manager.bind_key_held(pygame.K_w, move_up)
+input_manager.bind_key_held(pygame.K_d, move_right)
+input_manager.bind_key_held(pygame.K_s, move_down)
+input_manager.bind_key_held(pygame.K_a, move_left)
+input_manager.bind_key_pressed(pygame.K_SPACE, go_berserk)
+input_manager.bind_key_release(pygame.K_EQUALS, add_entity) 
+input_manager.bind_key_pressed(pygame.K_MINUS, remove_entity) 
 
 if __name__ == '__main__':
     game.run()

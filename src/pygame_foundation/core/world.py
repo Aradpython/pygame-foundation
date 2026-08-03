@@ -9,18 +9,10 @@ class World(pygame.sprite.Group):
 
     def __init__(self):
         super().__init__()
-        print(colored('Info:', 'blue'), 'The Message above is normal even when no obj is added to the world')
-
         self._layers = {}
         self._priorities = {}
         self._tags = {}
 
-    @debug_and_log(
-        {
-            'success':'Succussfully added obj/objs to World',
-            'error':'World Obj Addition Error'
-        }
-    )
     def add(self, *sprites: pygame.sprite.Sprite) -> None:
         super().add(*sprites)
 
@@ -31,12 +23,6 @@ class World(pygame.sprite.Group):
         self._update_priorities(*sprites)
         self._update_tags(*sprites)
 
-    @debug_and_log(
-        {
-            'success':'Succussfully removed obj/objs from World',
-            'error':'World Obj Removal Error'
-        }
-    )
     def remove(self, *sprites):
         super().remove(*sprites)
 
