@@ -34,10 +34,6 @@ class Game:
         ''' Draw and blit Objects to the screen '''
         self.world.draw(self.surface)
 
-    @debug_and_log({
-        'success':'Successfully closed game',
-        'error':'Error has occured during game',
-    })
     def run(self):
         ''' Run the Game '''
         self.running = True
