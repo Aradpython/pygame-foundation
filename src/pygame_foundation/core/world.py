@@ -1,4 +1,5 @@
-from .constants import UPDATE_EVERY_FRAME, WHITE, BLACK, GREEN
+from .constants import UPDATE_EVERY_FRAME
+from .camera import Camera
 from pygame_foundation.utils.debug import debug_and_log
 from termcolor import colored
 import pygame
@@ -7,11 +8,12 @@ import random
 class World(pygame.sprite.Group):
     """An enhanced Sprite Group used to manage game entities."""
 
-    def __init__(self):
+    def __init__(self, camera:Camera):
         super().__init__()
         self._layers = {}
         self._priorities = {}
         self._tags = {}
+        self.camera = camera
 
     def add(self, *sprites: pygame.sprite.Sprite) -> None:
         super().add(*sprites)
@@ -111,7 +113,7 @@ class World(pygame.sprite.Group):
                 if not sprite.active:
                     continue
 
-                sprite.draw(surface)
+                sprite.draw(surface, self.camera)
 
     def update(self, dt):
         ''' Updates the objects in the world according to their update_interval and priority. '''

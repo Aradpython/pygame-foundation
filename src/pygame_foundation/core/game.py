@@ -1,13 +1,14 @@
 from pygame_foundation.input.manager import InputManager
 from pygame_foundation.utils.debug import debug_and_log
-from .constants import *
+from .camera import Camera
 from .world import World
+from .constants import *
 import pygame
 
 
 class Game:
     ''' A class that acts as a manager for all events in the game '''
-    def __init__(self, window_width, window_height, caption, fps):
+    def __init__(self, window_width:int, window_height:int, caption:str, fps:int, camera_position:tuple[int, int]=(0, 0)):
         ''' Initialize the Game class and pygame '''
         pygame.init()
 
@@ -20,14 +21,15 @@ class Game:
 
         self.clock = pygame.time.Clock()
 
-        self.world = World()
+        self.camera = Camera(camera_position, window_width, window_height)
 
+        self.world = World(self.camera)
         self.input_manager = InputManager()
 
     def update(self, dt, events):
         ''' Update the Game '''
         self.input_manager.update(events)
-
+        self.camera.update()
         self.world.update(dt)
 
     def draw(self):

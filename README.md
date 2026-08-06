@@ -3,8 +3,7 @@
 A foundation for building Pygame projects and games.
 
 pygame-foundation is currently in active development. Additional features are planned for future versions.
-The current version is 0.1.4. In this version mouse inputs have been added, In addition to unbinding inputs
-and clearing all bound inputs.
+The latest version is 0.1.5. In this version camera functionality has been added.
 
 ## Installation
 
@@ -24,19 +23,18 @@ pip install pygame-foundation
 - Input Manager
 - Input Bindings
 - Input Types
+- Camera Class
+
 
 ## Updates
-- Input Listeners for mouse events including clicked, released, held and motion
-- Input Types(UPDATED)
-- Input Bindings(UPDATED)
-- Input Manager(UPDATED)
-- Unbinding
-- Clearing All Inputs
-- Activation and Deactivation of single Inputs
+- Camera class 
+- Drawing updates
+- camera.apply()
+- camera.follow()
+- camera.stop_following() 
 
-## Bug Fixes
-- Removed debug and log from game.run
-- Removed debug and log from binding methods
+## Bug to be fixed
+- mouse input coordinates to be fixed
 
 ## Quick Start
 
@@ -47,6 +45,7 @@ import pygame
 game = Game(600, 500, 'Pygame Foundation', 60)
 world = game.world
 input_manager = game.input_manager
+camera = game.camera
 
 entity = Entity(
     x=100,
@@ -59,6 +58,7 @@ def move_entity_right():
 
 world.add(entity)
 input_manager.bind_key_pressed(move_entity_right, pygame.K_RIGHT)
+camera.follow(entity)
 
 game.run()
 ```
@@ -67,7 +67,7 @@ game.run()
 
 - Controller Inputs
 - Scene system
-- Camera
+- Further camera features
 - Asset manager
 - Animation system
 - Timer system

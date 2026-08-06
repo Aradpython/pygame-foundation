@@ -17,7 +17,7 @@ class Entity(pygame.sprite.Sprite):
                 layer:int=0,
                 update_interval:float=UPDATE_EVERY_FRAME,
                 tags:set=None,
-                name='NONE'):
+                name='Entity'):
         ''' Initializes the Entity Class '''
         super().__init__()
         if imagepath:
@@ -28,6 +28,7 @@ class Entity(pygame.sprite.Sprite):
             self.image = None
             self.rect = pygame.Rect(x, y, *size)
             self.color = color
+            self.size = size
 
         self._world = None
 
@@ -110,14 +111,15 @@ class Entity(pygame.sprite.Sprite):
        '''Override in subclasses'''
        pass
 
-    def draw(self, surface):
+    def draw(self, surface, camera):
         ''' Draw or blit self to screen '''
         if self.visible:
+
             if self.image:
-                surface.blit(self.image, self.rect)
+                surface.blit(self.image, camera.apply(self.rect))
 
             else:
-                pygame.draw.rect(surface, self.color, self.rect)
+                pygame.draw.rect(surface, self.color, camera.apply(self.rect))
 
     @debug_and_log({
         'success':'Succussfully added tag.',
