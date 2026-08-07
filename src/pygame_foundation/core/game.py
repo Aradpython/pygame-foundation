@@ -1,6 +1,7 @@
+from pygame_foundation.assets.manager import AssetManager
 from pygame_foundation.input.manager import InputManager
 from pygame_foundation.utils.debug import debug_and_log
-from .camera import Camera
+from pygame_foundation.graphics.camera import Camera
 from .world import World
 from .constants import *
 import pygame
@@ -22,6 +23,7 @@ class Game:
         self.clock = pygame.time.Clock()
 
         self.camera = Camera(camera_position, window_width, window_height)
+        self.assets = AssetManager()
 
         self.world = World(self.camera)
         self.input_manager = InputManager()

@@ -2,12 +2,15 @@
 
 A foundation for building Pygame projects and games.
 
-pygame-foundation is currently in active development. Additional features are planned for future versions.
-The latest version is 0.1.5. In this version camera functionality has been added.
+`pygame-foundation` is currently in active development, with additional features planned for future versions.
+
+The latest version is **v0.1.6**. This release introduces asset-loading functionality through the new Asset Manager and Image Asset systems, along with bug fixes and improvements.
 
 ## Installation
 
+```bash
 pip install pygame-foundation
+```
 
 ## Features
 
@@ -23,18 +26,22 @@ pip install pygame-foundation
 - Input Manager
 - Input Bindings
 - Input Types
-- Camera Class
+- Camera class
+- Asset Manager
+- Image Asset
 
+## What's New in v0.1.6
 
-## Updates
-- Camera class 
-- Drawing updates
-- camera.apply()
-- camera.follow()
-- camera.stop_following() 
+- Added Asset Manager
+- Added Image Asset support
+- Added image loading and caching
+- Added image replacement and removal
+- Added image reloading
+- Bug fixes and general improvements
 
-## Bug to be fixed
-- mouse input coordinates to be fixed
+## Known Issues
+
+- Mouse input coordinates are currently being worked on and may not behave correctly in some situations.
 
 ## Quick Start
 
@@ -42,10 +49,12 @@ pip install pygame-foundation
 from pygame_foundation import Game, World, Entity
 import pygame
 
-game = Game(600, 500, 'Pygame Foundation', 60)
+game = Game(600, 500, "Pygame Foundation", 60)
+
 world = game.world
 input_manager = game.input_manager
 camera = game.camera
+assets = game.assets
 
 entity = Entity(
     x=100,
@@ -57,7 +66,12 @@ def move_entity_right():
     entity.x += 10
 
 world.add(entity)
-input_manager.bind_key_pressed(move_entity_right, pygame.K_RIGHT)
+
+input_manager.bind_key_pressed(
+    move_entity_right,
+    pygame.K_RIGHT
+)
+
 camera.follow(entity)
 
 game.run()
@@ -65,14 +79,13 @@ game.run()
 
 ## Roadmap
 
-- Controller Inputs
+- Controller inputs
 - Scene system
 - Further camera features
-- Asset manager
+- Additional asset types, such as sounds
 - Animation system
 - Timer system
 
 ## License
 
 This project is licensed under the MIT License.
-

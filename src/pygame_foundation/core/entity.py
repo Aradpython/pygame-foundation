@@ -1,5 +1,7 @@
-from .constants import WHITE, UPDATE_EVERY_FRAME
 from pygame_foundation.utils.debug import debug_and_log
+from .constants import WHITE, UPDATE_EVERY_FRAME
+from pygame_foundation.assets.manager import ImageAsset
+from pygame import Surface
 import pygame 
 
 class Entity(pygame.sprite.Sprite):
@@ -7,7 +9,7 @@ class Entity(pygame.sprite.Sprite):
     def __init__(self,
                 x,
                 y,
-                imagepath=None, 
+                image:Surface=None, 
                 size=(0, 0), 
                 color=WHITE, 
                 visible:bool=True,
@@ -20,9 +22,10 @@ class Entity(pygame.sprite.Sprite):
                 name='Entity'):
         ''' Initializes the Entity Class '''
         super().__init__()
-        if imagepath:
-            self.image = pygame.image.load(imagepath)
+        if image :
+            self.image = image
             self.rect = self.image.get_rect(topleft=(x, y))
+
 
         else:
             self.image = None

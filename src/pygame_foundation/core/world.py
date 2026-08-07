@@ -1,6 +1,6 @@
-from .constants import UPDATE_EVERY_FRAME
-from .camera import Camera
+from pygame_foundation.graphics.camera import Camera
 from pygame_foundation.utils.debug import debug_and_log
+from .constants import UPDATE_EVERY_FRAME
 from termcolor import colored
 import pygame
 import random
