@@ -39,9 +39,9 @@ def debug_and_log(messages:dict, expected_errors=[Exception], end='\n'):
                 print(f"{current_time}: {message}: {error}", end=end)
                 return None
 
-            success = colored(messages["success"], "green")
-            print(f"{current_time}: {success}", end=end)
-
+            if 'success' in messages:
+                success = colored(messages["success"], "green")
+                print(f"{current_time}: {success}", end=end)
             return result
 
         return wrapper

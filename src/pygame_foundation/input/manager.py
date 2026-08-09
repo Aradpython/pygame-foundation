@@ -1,8 +1,6 @@
 from pygame_foundation.utils.debug import debug_and_log
-from typing import dataclass_transform
 from enum import Enum
 import pygame
-
 
 class InputType(Enum):
     KEY_PRESSED = 1
@@ -37,88 +35,25 @@ class InputBinding:
     def __call__(self, *args, **kwargs):
         self.func(*args, **kwargs)
 
-class InputManager:
-    def __init__(self):
-        ''' A Manager for Keyboard Inputs '''
-        self._pressed = []
-        self._released = []
-        self._held = []
+class InputContext:
+    def __init__(self, name):
+        self.name = name
+        self._key_pressed = []
+        self._key_released = []
+        self._key_held = []
         self._mouse_clicked = []
         self._mouse_released = []
         self._mouse_held = []
         self._mouse_motion = []
-        
-        self.mouse_position = pygame.mouse.get_pos()
-
-    def bind_key_pressed(self, func, key=None, active=True):
-        ''' Add a listener for when the key is pressed down. '''
-        input_binding = InputBinding(key, func, InputType.KEY_PRESSED, is_active=active)
-        self._pressed.append(input_binding)
-        return input_binding
-
-    def bind_key_release(self, func, key=None, active=True):
-        ''' Add a listener for when the key is released. '''
-        input_binding = InputBinding(key, func, InputType.KEY_RELEASED, is_active=active)
-        self._released.append(input_binding)
-        return input_binding
-
-    def bind_key_held(self, func, key=None, active=True):
-        ''' Add a listener for when the key is held down. '''
-        input_binding = InputBinding(key, func, InputType.KEY_HELD, is_active=active)
-        self._held.append(input_binding)
-        return input_binding
-
-    def bind_mouse_clicked(self, func, button=None, active=True):
-        ''' 
-        Add a listener for when the mouse specified button clicked. 
-        Leave button as None for every mouse input.
-        The callback given must accept event in its parameters.
-        '''
-        input_binding = InputBinding(button, func, InputType.MOUSE_CLICKED, mouse=True, is_active=active)
-        self._mouse_clicked.append(input_binding)
-        return input_binding
-
-    def bind_mouse_released(self, func, button=None, active=True):
-        '''
-        Add a listener for when the mouse specified button released. 
-        Leave button as None for every mouse input.
-        The callback given must accept event in its parameters
-        '''
-        input_binding = InputBinding(button, func, InputType.MOUSE_RELEASED, mouse=True, is_active=active)
-        self._mouse_released.append(input_binding)
-        return input_binding
-
-    def bind_mouse_held(self, func, button=None, active=True):
-        ''' 
-        Add a listener for when the specified mouse button is held down. 
-        The callback given must accept mouse_x and mouse_y in its parameters
-        '''
-        input_binding = InputBinding(button, func, InputType.MOUSE_HELD, mouse=True, is_active=active)
-        self._mouse_held.append(input_binding)
-        return input_binding
-
-    def bind_mouse_motion(self, func, active=True):
-        ''' 
-        Add a listener for when the mouse is moved. 
-        The callback given must accept event in its parameters
-        '''
-        input_binding = InputBinding(None, func, InputType.MOUSE_MOTION, mouse=True, is_active=active)
-        self._mouse_motion.append(input_binding)
-        return input_binding
-                
-    def unbind_input(self, input, input_type:InputType):
-        ''' Unbind a input of any kind from manager '''
-        group = self._find_group(input_type)
-        return self._unbind_input(group, input)
 
     @debug_and_log({
         'success':'Succussfully Cleared All Inputs',
         'error':'Inputs Clearing Error',
     })
     def clear_inputs(self):
-        self._pressed.clear()
-        self._released.clear()
-        self._held.clear()
+        self._key_pressed.clear()
+        self._key_released.clear()
+        self._key_held.clear()
         self._mouse_clicked.clear()
         self._mouse_released.clear()
         self._mouse_held.clear()
@@ -148,21 +83,13 @@ class InputManager:
                 if binding.button == key: 
                     binding.is_active = False
 
-    def _do_action_on_group(self, group, action, *args, **kwargs):
-        for binding in group:
-            action(binding, *args, **kwargs)
-
-    def _remove_input(self, group, binding):
-        group.remove(binding)
-        del binding
-
     def _find_group(self, input_type:InputType) -> list:
         if input_type == InputType.KEY_PRESSED:
-            return self._pressed
+            return self._key_pressed
         elif input_type == InputType.KEY_RELEASED:
-            return self._released
+            return self._key_released
         elif input_type == InputType.KEY_HELD:
-            return self._held
+            return self._key_held
         elif input_type == InputType.MOUSE_CLICKED:
             return self._mouse_clicked
         elif input_type == InputType.MOUSE_RELEASED:
@@ -171,18 +98,6 @@ class InputManager:
             return self._mouse_held
         elif input_type == InputType.MOUSE_MOTION:
             return self._mouse_motion
-
-    def _unbind_input(self, bindings:list, input):
-        for input_binding in bindings:
-            if input_binding.key is not None:
-                if input_binding.key == input:
-                    self._remove_input(bindings, input_binding)
-                    return input_binding
-
-            else:
-                if input_binding.button == input:
-                    self._remove_input(bindings, input_binding)
-                    return input_binding
 
     def _handle_mouse_click(self, event, bindings, mouse_btn_type):
         for input_binding in bindings:
@@ -221,10 +136,10 @@ class InputManager:
 
             self._handle_mouse_click(event, self._mouse_clicked, pygame.MOUSEBUTTONDOWN)
             self._handle_mouse_click(event, self._mouse_released, pygame.MOUSEBUTTONUP)
-            self._handle_key_press(event, self._pressed, pygame.KEYDOWN)
-            self._handle_key_press(event, self._released, pygame.KEYUP)
+            self._handle_key_press(event, self._key_pressed, pygame.KEYDOWN)
+            self._handle_key_press(event, self._key_released, pygame.KEYUP)
 
-        for input_binding in self._held:
+        for input_binding in self._key_held:
             if not input_binding.is_active:
                 continue
             
@@ -243,4 +158,147 @@ class InputManager:
 
                 elif mouse_btns[input_binding.button - 1]:
                     input_binding(x, y)
+
+class InputManager:
+    def __init__(self):
+        ''' A Manager for Keyboard Inputs '''
+        self.contexts = []
+        self.current_context = None
+
+        self.mouse_position = pygame.mouse.get_pos()
+
+    def create_context(self, name) -> InputContext:
+        ''' Creates and binds a Context object. '''
+        context = InputContext(name)
+        self.contexts.append(context)
+        return context
+
+    def set_context(self, input_context:InputContext):
+        ''' Set the current context. '''
+        if input_context not in self.contexts:
+            raise ValueError(f"Context '{input_context.name}' is not registered")
+
+        self.current_context = input_context
+
+    def bind_key_pressed(self, context:InputContext, func, key=None, active=True):
+        ''' Add a listener for when the key is pressed down. '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, key, func, InputType.KEY_PRESSED, active, context._key_pressed)
+
+    def bind_key_release(self, context:InputContext, func, key=None, active=True):
+        ''' Add a listener for when the key is released. '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, key, func, InputType.KEY_RELEASED, active, context._key_released)
+
+    def bind_key_held(self, context:InputContext, func, key=None, active=True):
+        ''' Add a listener for when the key is held down. '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, key, func, InputType.KEY_HELD, active, context._key_held)
+
+    def bind_mouse_clicked(self, context:InputContext, func, button=None, active=True):
+        ''' 
+        Add a listener for when the mouse specified button clicked. 
+        Leave button as None for every mouse input.
+        The callback given must accept event in its parameters.
+        '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, button, func, InputType.MOUSE_CLICKED, active, context._mouse_clicked, mouse=True)
+
+    def bind_mouse_released(self, context:InputContext, func, button=None, active=True):
+        '''
+        Add a listener for when the mouse specified button released. 
+        Leave button as None for every mouse input.
+        The callback given must accept event in its parameters
+        '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, button, func, InputType.MOUSE_RELEASED, active, context._mouse_released, mouse=True)
+
+    def bind_mouse_held(self, context:InputContext, func, button=None, active=True):
+        ''' 
+        Add a listener for when the specified mouse button is held down. 
+        The callback given must accept mouse_x and mouse_y in its parameters
+        '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, button, func, InputType.MOUSE_HELD, active, context._mouse_held, mouse=True)
+    
+    def bind_mouse_motion(self, context:InputContext, func, active=True):
+        ''' 
+        Add a listener for when the mouse is moved. 
+        The callback given must accept event in its parameters
+        '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        return self._bind_key(context, None, func, InputType.MOUSE_MOTION, active, context._mouse_motion, mouse=True)
+
+    def _bind_key(self, context:InputContext, key, func, input_type, is_active, group, mouse=False):
+        if context not in self.contexts:
+            raise ValueError(
+                f"The context '{context.name}' is not known by the Input Manager"
+            )
+
+        input_binding = InputBinding(
+            key,
+            func,
+            input_type,
+            is_active=is_active,
+            mouse=mouse
+        )
+
+        group.append(input_binding)
+        return input_binding
+
+    def _do_action_on_group(self, group, action, *args, **kwargs):
+        for binding in group:
+            action(binding, *args, **kwargs)
+
+    def _remove_input(self, group, binding):
+        group.remove(binding)
+        del binding
+
+    def update(self, events):
+        if self.current_context is not None:
+            self.current_context.update(events)
+        
+    def unbind_input(self, context:InputContext, input, input_type:InputType):
+        ''' Unbind a input of any kind from manager '''
+        if context not in self.contexts:
+            raise ValueError(
+                f"Context '{context.name}' is not known by the Input Manager"
+            )
+        group = context._find_group(input_type)
+        return self._unbind_input(group, input)
+
+    def _unbind_input(self, bindings:list, input):
+        for input_binding in bindings:
+            if input_binding.key is not None:
+                if input_binding.key == input:
+                    self._remove_input(bindings, input_binding)
+                    return input_binding
+
+            else:
+                if input_binding.button == input:
+                    self._remove_input(bindings, input_binding)
+                    return input_binding
+
+
 
