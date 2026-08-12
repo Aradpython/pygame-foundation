@@ -11,7 +11,7 @@ class Entity(pygame.sprite.Sprite):
                 y,
                 image:Surface=None, 
                 size=(0, 0), 
-                color=WHITE, 
+                color:tuple[int, int, int]=WHITE, 
                 visible:bool=True,
                 paused:bool=False,
                 active:bool=True,
@@ -19,13 +19,25 @@ class Entity(pygame.sprite.Sprite):
                 layer:int=0,
                 update_interval:float=UPDATE_EVERY_FRAME,
                 tags:set=None,
-                name='Entity'):
-        ''' Initializes the Entity Class '''
+                name:str='Entity',
+                collision_group:str='None',
+                collision_mask:set[str]=None
+                ):
+        ''' 
+        Please remember that all entities that require a collision check must have the other in the collision mask.
+        
+        For instance:
+            player = Entity(collision_group='PLAYER', collision_mask={'COIN'})
+            player = Entity(collision_group='COIN', collision_mask={'PLAYER'})
+        
+        NOT:
+            player = Entity(collision_group='PLAYER', collision_mask={'COIN'})
+            player = Entity(collision_group='COIN', collision_mask={})
+        '''
         super().__init__()
         if image :
             self.image = image
             self.rect = self.image.get_rect(topleft=(x, y))
-
 
         else:
             self.image = None
@@ -44,6 +56,9 @@ class Entity(pygame.sprite.Sprite):
         self._elapsed = 0.0
         self._tags = set() if tags is None else set(tags)
         self.name = name
+
+        self.collision_group = collision_group
+        self.collision_mask = set() if collision_mask is None else set(collision_mask)
 
     def __str__(self):
         return self.name

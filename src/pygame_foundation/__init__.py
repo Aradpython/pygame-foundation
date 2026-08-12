@@ -1,8 +1,5 @@
 """Foundational helpers for Pygame projects."""
 
-from .core import *
-from .input import *
-
 __all__ = [
     'Game',
     'Entity', 

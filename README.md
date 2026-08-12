@@ -2,16 +2,20 @@
 
 A foundation for building Pygame projects and games.
 
-`pygame-foundation` provides reusable systems and abstractions for building Pygame games without having to implement common game-engine functionality from scratch.
+`pygame-foundation` is a framework built on top of Pygame that provides reusable systems for common game-development tasks, allowing you to focus more on building your game instead of repeatedly implementing the same underlying systems.
 
-The project is currently in active development, with additional features planned for future releases.
+The project is currently in active development, and additional features are planned for future releases.
 
-**Latest version: 0.1.7**
+**Latest version: 0.1.8**
 
 ## Installation
 
 ```bash
 pip install pygame-foundation
+```
+or 
+```bash
+python -m pip install pygame-foundation
 ```
 
 ## Features
@@ -33,169 +37,153 @@ pip install pygame-foundation
 - Input Manager
 - Input Bindings
 - Input Types
-- Keyboard input
-- Mouse input
-- Input contexts
+- Input Contexts
 - Scene-specific input contexts
 
 ### Camera
 
 - Camera system
 - Entity following
-- Camera positioning
 
 ### Assets
 
 - Asset Manager
 - Image Assets
-- Image loading
-- Image metadata management
+- Image loading and management
 
 ### Scenes
 
 - Scene class
 - Scene Manager
-- Scene lifecycle
 - Scene switching
-- Scene stack
+- Scene stacking
 - Scene-specific input contexts
-- Scene `enter()` / `exit()` lifecycle
-- Scene `pause()` / `resume()` lifecycle
-- Scene update blocking
-- Scene drawing blocking
-- Scene overlays
+- Covered-scene update control
+- Covered-scene drawing control
 
-## What's New in 0.1.7
+### Physics
 
-### Scene Management
-
-Version `0.1.7` introduces a scene management system for organizing different parts of a game such as menus, gameplay, pause screens, settings, and other game states.
-
-Scenes support a lifecycle consisting of:
-
-```text
-enter()
-exit()
-pause()
-resume()
-```
-
-### Scene Stack
-
-Scenes can now be stacked using:
-
-```python
-scene_manager.push_scene(scene)
-```
-
-and removed using:
-
-```python
-scene_manager.pop_scene()
-```
-
-This makes it possible to create structures such as:
-
-```text
-GameScene
-    ↓
-PauseScene
-    ↓
-SettingsScene
-```
-The underlying scenes can remain preserved while another scene is active.
-
-You can also completely replace the current scene with:
-
-```python
-scene_manager.change_scene(scene)
-```
-
-### Scene Input Contexts
-
-Each scene can have its own input context.
-
-This allows different scenes to respond to different inputs.
-
-For example:
-
-```text
-GameScene
-    → WASD movement
-
-PauseScene
-    → Mouse/menu controls
-```
-
-When the active scene changes, the corresponding input context is automatically activated.
-
-### Scene Update & Drawing Control
-
-Scenes can control whether they block scenes underneath them from updating or drawing.
-
-This allows overlays such as pause menus while keeping the underlying game visible.
-
-For example:
-
-```python
-pause_scene.blocks_updates = True
-pause_scene.blocks_drawings = False
-```
-
-This allows the game to remain visible while its updates are paused.
+- Collision Manager
+- Rectangle/AABB collision detection
+- Collision groups
+- Collision masks
+- `ENTERED`, `STAYING`, and `EXITED` collision states
+- Collision callbacks
+- Basic collision resolution
 
 ## Quick Start
 
 ```python
 import pygame
 
-from pygame_foundation import Game, World, Entity
-from pygame_foundation.scene import Scene
-
-
-class GameScene(Scene):
-    def __init__(self, game, name):
-        super().__init__(game, name)
-        self.world = World(game.camera)
-
-    def update(self, dt, events):
-        self.world.update(dt)
-
-    def draw(self, screen):
-        self.world.draw(screen)
-
-
-class PauseScene(Scene):
-    def __init__(self, game, name):
-        super().__init__(game, name)
-
-        self.blocks_updates = True
-        self.blocks_drawings = False
-
-    def update(self, dt, events):
-        pass
-
-    def draw(self, screen):
-        pass
+from pygame_foundation import Game, Entity, World
 
 
 game = Game(600, 500, "Pygame Foundation", 60)
 
-scene_manager = game.scene_manager
+world = game.world
+input_manager = game.input_manager
+camera = game.camera
 
-game_scene = GameScene(game, "GameScene")
-pause_scene = PauseScene(game, "PauseScene")
 
-scene_manager.change_scene(game_scene)
+player = Entity(
+    x=100,
+    y=100,
+    size=(50, 50)
+)
 
-# Later:
-scene_manager.push_scene(pause_scene)
+world.add(player)
 
-# To return:
-scene_manager.pop_scene()
+
+def move_right():
+    player.x += 5
+
+
+input_manager.bind_key_held(
+    move_right,
+    pygame.K_RIGHT
+)
+
+camera.follow(player)
 
 game.run()
 ```
+
+## Collision Example
+
+Collision checks can be registered between entities and can optionally execute callbacks when a specific collision state occurs.
+
+```python
+from pygame_foundation.physics.collision import CollisionState
+
+
+def on_coin_collected(collision):
+    print("Coin collected!")
+
+
+collision_manager.add_collision_check(
+    player,
+    coin,
+    CollisionState.ENTERED,
+    on_coin_collected
+)
+```
+
+Collision checks support three main states:
+
+```text
+ENTERED
+STAYING
+EXITED
+```
+
+Collision filtering can also be used to control which entities are allowed to collide.
+
+```python
+player = Entity(
+    100,
+    100,
+    size=(50, 50),
+    collision_group="PLAYER",
+    collision_mask={"WALL", "ENEMY", "COIN"}
+)
+
+wall = Entity(
+    300,
+    100,
+    size=(50, 200),
+    collision_group="WALL",
+    collision_mask={"PLAYER"}
+)
+```
+
+Basic collision resolution can be enabled when an entity should not remain overlapping another entity.
+
+```python
+collision_manager.add_collision_check(
+    player,
+    wall,
+    CollisionState.ENTERED,
+    None,
+    resolve=True,
+    resolve_who=player
+)
+```
+
+## Project Structure
+
+```text
+pygame_foundation/
+├── core/
+├── input/
+├── camera/
+├── assets/
+├── scene/
+├── physics/
+└── utils/
+```
+
+The framework is organized into separate systems so that individual features can be developed and expanded independently.
 
 ## Roadmap
 
@@ -203,17 +191,19 @@ Planned features include:
 
 - Controller / joystick input
 - Further camera features
-- Further asset types, such as sounds
+- Further asset types
+- Sound asset support
 - Animation system
 - Timer system
-- Additional scene features
-- Additional input features
+- Additional physics features
+- More collision shapes
+- Performance improvements
 
 ## Development
 
-`pygame-foundation` is currently under active development.
+`pygame-foundation` is actively developed, and APIs may change between releases as the framework evolves.
 
-The API may change between early releases as the framework continues to evolve.
+Feedback, bug reports, and contributions are welcome.
 
 ## License
 

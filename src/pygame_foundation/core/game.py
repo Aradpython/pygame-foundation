@@ -1,3 +1,4 @@
+from pygame_foundation.physics.collision import CollisionManager
 from pygame_foundation.assets.manager import AssetManager
 from pygame_foundation.input.manager import InputManager
 from pygame_foundation.scene.manager import SceneManager
@@ -26,12 +27,14 @@ class Game:
         self.assets = AssetManager()
         self.scene_manager = SceneManager(self)
         self.input_manager = InputManager()
+        self.collision_manager = CollisionManager()
 
 
-    def update(self, events):
+    def update(self, dt, events):
         ''' Update the Game '''
-        # self.input_manager.update(events)
         self.camera.update()
+        self.scene_manager.update(dt, events)
+        self.collision_manager.update()
 
     def run(self):
         ''' Run the Game '''
@@ -46,10 +49,11 @@ class Game:
 
             self.surface.fill(BLACK)
 
-            self.update(events)
+            self.update(dt, events)
 
-            self.scene_manager.update(dt, events)
             self.scene_manager.draw(self.surface)
+
+
 
             pygame.display.update()
         pygame.quit()

@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygame-foundation"
-version = "0.1.7"
+version = "0.1.8"
 description = "A modern wrapper around Pygame."
 readme = "README.md"
 requires-python = ">=3.10"
