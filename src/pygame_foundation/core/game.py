@@ -4,8 +4,10 @@ from pygame_foundation.input.manager import InputManager
 from pygame_foundation.scene.manager import SceneManager
 from pygame_foundation.utils.debug import debug_and_log
 from pygame_foundation.graphics.camera import Camera
+from .timer import TimerManager
 from .constants import *
 import pygame
+
 
 
 class Game:
@@ -28,10 +30,11 @@ class Game:
         self.scene_manager = SceneManager(self)
         self.input_manager = InputManager()
         self.collision_manager = CollisionManager()
-
+        self.timer_manager = TimerManager()
 
     def update(self, dt, events):
         ''' Update the Game '''
+        self.timer_manager.update(dt)
         self.camera.update()
         self.scene_manager.update(dt, events)
         self.collision_manager.update()
@@ -52,8 +55,6 @@ class Game:
             self.update(dt, events)
 
             self.scene_manager.draw(self.surface)
-
-
-
             pygame.display.update()
+
         pygame.quit()

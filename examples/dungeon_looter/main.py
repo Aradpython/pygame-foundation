@@ -1,13 +1,16 @@
 from pygame_foundation.physics.collision import CollisionState
 from pygame_foundation.core import Game
+from pathlib import Path
 from classes import *
 import pygame
-from pathlib import Path
+import random
+
 
 game = Game(900, 800, 'Dungeon Looter', 60)
 collision_manager = game.collision_manager
 scene_manager = game.scene_manager
 input_manager = game.input_manager
+timer_manager = game.timer_manager
 camera = game.camera
 assets = game.assets
 
@@ -27,7 +30,7 @@ coin_image = load_optional_image('coin', 'coin.png')
 enemy_image = load_optional_image('enemy', 'enemy.png')
 
 COIN_POSITIONS = [(120, 120), (410, 100), (730, 120), (120, 520), (720, 610)]
-player = Player(60, 60, player_image, goal=len(COIN_POSITIONS))
+player = Player(60, 60, player_image)
 player.layer = 1
 game_scene.set_player(player)
 
@@ -53,17 +56,25 @@ enemies = [
 for enemy in enemies:
     enemy.layer = 1
 
+def spawn_coin():
+    coin = Coin(random.randint(0, 850), random.randint(0, 750), coin_image)
+    coin.layer = 19
+    collision_manager.add_collision_check(player, coin, CollisionState.ENTERED, collect_coin)
+    for wall in walls:
+        collision_manager.add_collision_check(coin, wall, CollisionState.ENTERED, callback=None, resolve=True, resolve_who=coin)
+    game_scene.world.add(coin)
+
 def collect_coin(collision):
     player.collect_coin()
     coin = collision.entity2
     coin.visible = False
     coin.active = False
-    if player.coins == player.goal:
-        print('You escaped with all the loot! '*5)
-        game.running = False
 
 def caught_by_enemy(collision):
     player.return_to_spawn()
+    player.coins = 0
+    game.running = False
+    print(f'You were caught. But you got {player.coins} coin/s good job.')
 
 def enemy_hit_wall(collision):
     collision.entity1.turn_around()
@@ -87,6 +98,8 @@ for coin in coins:
 
 for enemy in enemies:
     collision_manager.add_collision_check(player, enemy, CollisionState.ENTERED, caught_by_enemy)
+
+timer_manager.every(4000, spawn_coin)
 
 
 game.run()

@@ -19,20 +19,19 @@ class GameScene(Scene):
     def draw(self, screen):
         self.world.draw(screen)
         if self.player is not None:
-            score = self.font.render(f'Loot: {self.player.coins}/{self.player.goal}', True, (255, 230, 90))
+            score = self.font.render(f'Loot: {self.player.coins}', True, (255, 230, 90))
             help_text = self.font.render('WASD: move   Avoid the red guards!', True, (235, 235, 235))
             screen.blit(score, (20, 18))
             screen.blit(help_text, (20, 50))
 
 
 class Player(Entity):
-    def __init__(self, x, y, image=None, goal=5):
+    def __init__(self, x, y, image=None):
         super().__init__(x, y, image)
         self.collision_group = 'PLAYER'
         self.collision_mask = {'WALL', 'COIN', 'ENEMY'}
         self.coins = 0
         self.velocity = 5
-        self.goal = goal
         self.spawn_point = (x, y)
 
     def move_up(self):
