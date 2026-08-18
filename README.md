@@ -6,7 +6,11 @@ A foundation for building Pygame projects and games.
 
 The project is currently in active development, and additional features are planned for future releases.
 
-**Latest version: 0.1.9**
+**Latest version: 0.2.0**
+
+## Documentation
+[here]:https://aradpython.github.io/pygame-foundation/
+You can find the documentation, [here]
 
 ---
 
@@ -133,162 +137,8 @@ game.run()
 
 ---
 
-## Timers
-
-The timer system allows callbacks to be executed after a specified amount of time.
-
-### One-shot timer
-
-```python
-game.timer_manager.after(
-    1000,
-    spawn_enemy
-)
-```
-
-The callback will execute once after 1000 milliseconds.
-
-### Limited loops
-
-```python
-game.timer_manager.after(
-    500,
-    spawn_enemy,
-    loops=5
-)
-```
-
-The callback will execute five times, once every 500 milliseconds.
-
-### Repeating timer
-
-```python
-game.timer_manager.every(
-    1000,
-    spawn_enemy
-)
-```
-
-The callback will execute every 1000 milliseconds until the timer is cancelled.
-
----
-
-## Collision System
-
-Entities can be assigned collision groups and masks to control which entities can interact with each other.
-
-```python
-player = Entity(
-    x=100,
-    y=100,
-    size=(50, 50),
-    collision_group="PLAYER",
-    collision_mask={"WALL", "ENEMY", "COIN"}
-)
-
-wall = Entity(
-    x=300,
-    y=100,
-    size=(50, 200),
-    collision_group="WALL",
-    collision_mask={"PLAYER"}
-)
-```
-
-Collision checks can react to different collision states:
-
-```python
-from pygame_foundation.physics.collision import CollisionState
-
-
-def on_collision(collision):
-    print("Collision detected!")
-
-
-collision_manager.add_collision_check(
-    player,
-    wall,
-    CollisionState.ENTERED,
-    on_collision
-)
-```
-
-The available collision states are:
-
-```text
-ENTERED
-STAYING
-EXITED
-```
-
-Basic collision resolution can also be enabled:
-
-```python
-collision_manager.add_collision_check(
-    player,
-    wall,
-    CollisionState.STAYING,
-    None,
-    resolve=True,
-    resolve_who=player
-)
-```
-
----
-
-## Scenes
-
-Scenes allow different parts of a game to be separated into independent states.
-
-For example:
-
-```text
-GameScene
-    │
-    ├── Player
-    ├── Enemies
-    └── Level
-
-PauseScene
-    │
-    ├── Resume
-    └── Quit
-```
-
-Scenes can also be stacked, allowing a pause menu or another overlay to appear above the current game scene.
-
-This makes it possible to have different input contexts and behavior for different parts of a game.
-
----
-
-## Camera
-
-The camera can follow an entity:
-
-```python
-camera.follow(player)
-```
-
-This allows the game world to move relative to the screen while keeping the selected entity centered or positioned according to the camera's configuration.
-
----
-
-## Assets
-
-The Asset Manager provides centralized management of game assets.
-
-For example:
-
-```python
-assets = game.assets
-
-player_image = assets.load_image(
-    "player",
-    "assets/player.png"
-)
-```
-
-Loaded assets can then be reused rather than repeatedly loading the same file.
+## Whats New
+In this release, documentation has been added. So you may refer to it via this [link][here]
 
 ---
 
@@ -299,6 +149,7 @@ The project is organized into separate systems:
 ```text
 pygame_foundation/
 ├── core/
+│   ├── constants.py
 │   ├── game.py
 │   ├── world.py
 │   ├── entity.py
