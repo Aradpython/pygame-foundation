@@ -3,12 +3,14 @@ from pygame import Surface
 import pygame
 
 class ImageAsset:
+    ''' A class to store image metadata. Such as surface, path, alpha. '''
     def __init__(self, path:FileLike, alpha:bool):
         self.path = path
         self.alpha = alpha
         self.surface = self.load()
 
     def load(self, path=None):
+        ''' Load a image from a given path and replace the current one. If no path is given it will reload image from previous path. '''
         if path is not None:
             self.path = path
 
@@ -22,9 +24,11 @@ class ImageAsset:
         return self.surface
     
     def reload(self):
+        ''' Reloads the image surface. '''
         return self.load()
 
 class AssetManager:
+    ''' A class to act as a manager for all types of assets. '''
     def __init__(self):
         self.images = {}
 
@@ -65,8 +69,8 @@ class AssetManager:
         ''' Checks if the image name exists in image assets. Returns a boolean '''
         return name in self.images
 
-    def remove_image(self, name:str):
-        ''' Remove specified image and metadata from image assets '''
+    def remove_image(self, name:str) -> ImageAsset:
+        ''' Remove specified image and metadata from image assets. '''
         if self.has_image(name):
             return self.images.pop(name)
 
@@ -74,7 +78,7 @@ class AssetManager:
             raise ValueError(f'Image "{name}" is not loaded so it cannot be removed.')
 
     def clear_images(self):
-        ''' Clear all images from assets '''
+        ''' Clear all images from assets manager. '''
         self.images.clear()
 
     def reload_image(self, name:str):
@@ -86,7 +90,7 @@ class AssetManager:
             raise ValueError(f'Image "{name}" is not loaded.')
 
     def reload_all_images(self):
-        ''' Reload all images '''
+        ''' Reload all images in the asset manager'''
         for image_asset in self.images.values():
             image_asset.reload()
 

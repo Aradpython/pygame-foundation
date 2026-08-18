@@ -1,11 +1,10 @@
 from pygame_foundation.utils.debug import debug_and_log
 from .constants import WHITE, UPDATE_EVERY_FRAME
-from pygame_foundation.assets.manager import ImageAsset
 from pygame import Surface
 import pygame 
 
 class Entity(pygame.sprite.Sprite):
-    ''' A super class to be used to create subclasses  '''
+    ''' A class ment to be used instead of the pygame.sprite.Sprite . '''
     def __init__(self,
                 x,
                 y,
@@ -24,7 +23,9 @@ class Entity(pygame.sprite.Sprite):
                 collision_mask:set[str]=None
                 ):
         ''' 
-        Please remember that all entities that require a collision check must have the other in the collision mask.
+        Initializes the Entity.
+
+        IMPORTANT: All entities that require a collision check must have the other in the collision mask.
         
         For instance:
             player = Entity(collision_group='PLAYER', collision_mask={'COIN'})
@@ -65,42 +66,52 @@ class Entity(pygame.sprite.Sprite):
 
     @property
     def coordinates(self):
+        ''' The entity's world coordinates '''
         return self.rect.topleft
 
     @coordinates.setter
     def coordinates(self, value):
+        ''' The entity's world coordinates '''
         self.rect.topleft = value
 
     @property
     def x(self):
+        ''' The entity's x world coordinates '''
         return self.rect.x
 
     @x.setter
     def x(self, value):
+        ''' The entity's x world coordinates '''
         self.rect.x = value
 
     @property
     def y(self):
+        ''' The entity's y world coordinates '''
         return self.rect.y
 
     @y.setter
     def y(self, value):
+        ''' The entity's y world coordinates '''
         self.rect.y = value
 
     @property
     def world(self):
+        ''' The World class that the Entity belongs to. '''
         return self._world
 
     @property
     def tags(self): 
+        ''' A frozen set of the tags the Entity owns. '''
         return frozenset(self._tags)
     
     @property
     def layer(self):
+        ''' The layer the Entity should be drawn. Also known as the z-index. '''
         return self._layer
 
     @layer.setter
     def layer(self, value):
+        ''' The layer the Entity should be drawn. Also known as the z-index. '''
         if self._layer == value:
             return
 
@@ -112,10 +123,12 @@ class Entity(pygame.sprite.Sprite):
 
     @property
     def priority(self):
+        ''' The update priority of the Entity. '''
         return self._priority
 
     @priority.setter
     def priority(self, value):
+        ''' The update priority of the Entity. '''
         if self._priority == value:
             return
 
@@ -126,13 +139,12 @@ class Entity(pygame.sprite.Sprite):
             self._world._move_priority(self, old_priority, value)
 
     def update(self, dt):
-       '''Override in subclasses'''
+       '''A method that is run automatically depending on the update interval. Override in subclasses'''
        pass
 
     def draw(self, surface, camera):
-        ''' Draw or blit self to screen '''
+        ''' Draw or blit self to screen. Is automatically called depending on the update interval. '''
         if self.visible:
-
             if self.image:
                 surface.blit(self.image, camera.apply(self.rect))
 
@@ -144,6 +156,7 @@ class Entity(pygame.sprite.Sprite):
         'error':'Tag Addition Error',
     })
     def add_tag(self, tag):
+        ''' Add a tag to the Entity '''
         if tag in self._tags:
             return
 
@@ -157,6 +170,7 @@ class Entity(pygame.sprite.Sprite):
         'error':'Tag Removal Error',
     })
     def remove_tag(self, tag):
+        ''' Remove a tag from the Entity '''
         if tag not in self._tags:
             return
 
@@ -166,4 +180,5 @@ class Entity(pygame.sprite.Sprite):
             self._world._remove_tag(self, tag)
 
     def has_tag(self, tag):
+        ''' Checks if the tag exists in the Entity. Returns a boolean. '''
         return tag in self._tags

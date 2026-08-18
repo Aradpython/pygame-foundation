@@ -3,6 +3,7 @@ from enum import Enum
 import pygame
 
 class InputType(Enum):
+    ''' A Enum subclass used to store input types. '''
     KEY_PRESSED = 1
     KEY_RELEASED = 2
     KEY_HELD = 3
@@ -12,6 +13,7 @@ class InputType(Enum):
     MOUSE_MOTION = 7
 
 class InputBinding:
+    ''' A class used to store metadata for input bindings '''
     def __init__(self, key_btn, func, type:InputType, mouse=False, is_active=True):
         ''' A class to store Input data '''
         self.func = func
@@ -36,6 +38,7 @@ class InputBinding:
         self.func(*args, **kwargs)
 
 class InputContext:
+    ''' A class used to store input bindings and separate them. Used in Scenes for making paused inputs. '''
     def __init__(self, name):
         self.name = name
         self._key_pressed = []
@@ -51,6 +54,7 @@ class InputContext:
         'error':'Inputs Clearing Error',
     })
     def clear_inputs(self):
+        ''' Clears all inputs from the context. '''
         self._key_pressed.clear()
         self._key_released.clear()
         self._key_held.clear()
@@ -60,7 +64,7 @@ class InputContext:
         self._mouse_motion.clear()
 
     def activate_input(self, key, input_type:InputType):
-        ''' Activate the input. This is done by change the specified inputs is_active to True '''
+        ''' Activates the input. This is done by change the specified inputs is_active to True '''
         group = self._find_group(input_type)
         for binding in group:
             if binding.key is not None:
@@ -72,7 +76,7 @@ class InputContext:
                     binding.is_active = True
 
     def deactivate_input(self, key, input_type:InputType):
-        ''' Deactivate the input. This is done by change the specified inputs is_active to False '''
+        ''' Deactivates the input. This is done by change the specified inputs is_active to False '''
         group = self._find_group(input_type)
         for binding in group:
             if binding.key is not None:
@@ -124,6 +128,7 @@ class InputContext:
                 input_binding()
 
     def update(self, events):
+        ''' Updates the Input Context object '''
         keys = pygame.key.get_pressed()
         any_key_pressed = True in keys
         mouse_btns = pygame.mouse.get_pressed()
@@ -160,6 +165,7 @@ class InputContext:
                     input_binding(x, y)
 
 class InputManager:
+    ''' A class for managing Inputs and Input Contexts. '''
     def __init__(self):
         ''' A Manager for Keyboard Inputs '''
         self.contexts = []
@@ -174,7 +180,7 @@ class InputManager:
         return context
 
     def set_context(self, input_context:InputContext):
-        ''' Set the current context. '''
+        ''' Sets the current Input Context. '''
         if input_context not in self.contexts:
             raise ValueError(f"Context '{input_context.name}' is not registered")
 
@@ -276,11 +282,12 @@ class InputManager:
         del binding
 
     def update(self, events):
+        ''' Updates the current Input Context '''
         if self.current_context is not None:
             self.current_context.update(events)
         
     def unbind_input(self, context:InputContext, input, input_type:InputType):
-        ''' Unbind a input of any kind from manager '''
+        ''' Unbind a input of any kind from the Input Context. '''
         if context not in self.contexts:
             raise ValueError(
                 f"Context '{context.name}' is not known by the Input Manager"

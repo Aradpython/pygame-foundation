@@ -1,6 +1,7 @@
 from .scene import SceneStatus 
 
 class SceneManager:
+    ''' A class used for managing Scenes. '''
     def __init__(self, game):
         self.game = game
         self.current_scenes = []
@@ -11,7 +12,7 @@ class SceneManager:
         self.game.input_manager.set_context(scene.input_context)
 
     def change_scene(self, scene):
-        """Replace the active scene."""
+        """Replace the active scene or set it to one if none where selected before. """
         if self.current_scenes:
             old_scene = self.current_scenes.pop()
             old_scene.exit()
@@ -20,7 +21,10 @@ class SceneManager:
         self._activate_scene(scene)
 
     def push_scene(self, scene):
-        """Overlay a scene, preserving the current one underneath."""
+        """
+        Overlay a scene, preserving the current one underneath. 
+        The attributes configured in the overlayed Scene will determine whether to draw and/or update the underlaying scenes. 
+        """
 
         self.current_scenes.append(scene)
         self._activate_scene(scene)
@@ -32,7 +36,10 @@ class SceneManager:
                 previous_scene.pause()
 
     def pop_scene(self):
-        """Close the active scene and return to the one below it."""
+        """
+        Close the active scene and return to the one below it. 
+        If there is no overlaying Scene, it will raise an IndexError.
+        """
         if not self.current_scenes:
             return
 
@@ -45,6 +52,7 @@ class SceneManager:
             self.game.input_manager.set_context(scene.input_context)
 
     def update(self, dt, events):
+        ''' Updates the current Scene or Scenes. '''
         if not self.current_scenes:
             return
 
@@ -62,6 +70,7 @@ class SceneManager:
                 break
 
     def draw(self, screen):
+        ''' Draws the current Scene or Scenes.  '''
         if not self.current_scenes:
             return
 
@@ -76,3 +85,4 @@ class SceneManager:
 
         for scene in self.current_scenes[start:]:
             scene.draw(screen)
+

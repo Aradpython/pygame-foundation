@@ -3,12 +3,14 @@ from enum import Enum
 
 
 class CollisionState(Enum):
+    ''' A Enum subclass used to store collision states. '''
     ENTERED = 0
     STAYING = 1
     EXITED = 2
     NONE = 3
 
 class Collision:
+    ''' A class used to store metadata for expected collisions. '''
     def __init__(self, entity1, entity2, only_when:CollisionState, func:Callable=None, resolve:bool=False, resolve_who=None):
         self.entity1 = entity1
         self.entity2 = entity2
@@ -30,6 +32,7 @@ class Collision:
             self.on_collision(self, *args, **kwds)
 
 class CollisionManager:
+    ''' A class used to manage Collision checks '''
     def __init__(self):
         self.collisions = []
 
@@ -67,6 +70,7 @@ class CollisionManager:
                     resolve_who.top = not_resolve.bottom
 
     def update(self):
+        ''' Updates and checks for any occuring collisions. '''
         for collision in self.collisions:
             entity1 = collision.entity1
             entity2 = collision.entity2

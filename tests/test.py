@@ -1,8 +1,11 @@
 from pygame_foundation.physics.collision import CollisionState
 from pygame_foundation.core import Entity, Game, World, Timer
 from pygame_foundation.scene import Scene
+from pygame_foundation.graphics import Camera
 import pygame
 import random
+
+d = Camera()
 
 class GameScene(Scene):
     def __init__(self, game, name):

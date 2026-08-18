@@ -1,4 +1,11 @@
-"""Foundational helpers for Pygame projects."""
+""" 
+pygame-foundation:
+A wrapper around pygame which can be used either as an engine or helper functionality.
+Current version: 0.2.0
+Created by Arad Rezakhani.
+"""
+
+from pygame_foundation.core.constants import *
 
 __all__ = [
     'Game',
@@ -12,5 +19,6 @@ __all__ = [
     'InputType',
     'InputBinding',
     'InputManager',
+    '...',
 ]
-__version__ = "0.1.1"
+__version__ = "0.1.9"

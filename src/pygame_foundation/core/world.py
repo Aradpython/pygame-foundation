@@ -1,9 +1,7 @@
 from pygame_foundation.graphics.camera import Camera
 from pygame_foundation.utils.debug import debug_and_log
 from .constants import UPDATE_EVERY_FRAME
-from termcolor import colored
 import pygame
-import random
 
 class World(pygame.sprite.Group):
     """An enhanced Sprite Group used to manage game entities."""
@@ -16,6 +14,7 @@ class World(pygame.sprite.Group):
         self.camera = camera
 
     def add(self, *sprites: pygame.sprite.Sprite) -> None:
+        ''' Add one or more Entities to the World '''
         super().add(*sprites)
 
         for sprite in sprites:
@@ -26,6 +25,7 @@ class World(pygame.sprite.Group):
         self._update_tags(*sprites)
 
     def remove(self, *sprites):
+        ''' Remove one or more Entities from the World '''
         super().remove(*sprites)
 
         for sprite in sprites:
@@ -108,6 +108,7 @@ class World(pygame.sprite.Group):
         return sprites
 
     def draw(self, surface):
+        ''' Draw all valid for drawing Entities. Valid for drawing entities are those that have active and visible parameters as True '''
         for layer in sorted(self._layers):
             for sprite in self._layers[layer]:
                 if not sprite.active:
@@ -116,7 +117,7 @@ class World(pygame.sprite.Group):
                 sprite.draw(surface, self.camera)
 
     def update(self, dt):
-        ''' Updates the objects in the world according to their update_interval and priority. '''
+        ''' Updates all the valid for updates objects in the world according to their update_interval and priority. Valid for update entities are those that have the active parameter as True and the paused parameter set to False '''
         for priority in sorted(self._priorities):
             for sprite in self._priorities[priority]:
                 if not sprite.active or sprite.paused:
@@ -160,7 +161,7 @@ class World(pygame.sprite.Group):
         ''' 
         Gets all the sprites that contains the specified tags.
         This function filters and gets all the sprites that have all the tags
-        not only one.
+        not just one tags. 
         '''
         sprites = set(self._tags.get(tags[0], []))
         for tag in tags[1:]:
@@ -227,7 +228,7 @@ class World(pygame.sprite.Group):
     )
     def show_tags(self, *tags) -> list:
         ''' 
-        Show the hidden sprites that contains the specified tags.
+        Shows the hidden sprites that contains the specified tags.
         It does this by changing the visible attribute on the entity to True.
         '''
         sprites = self._find_tags(*tags)
@@ -244,7 +245,7 @@ class World(pygame.sprite.Group):
     )
     def activate_tags(self, *tags) -> list:
         ''' 
-        Activate the sprites that contains the specified tags.
+        Activates the sprites that contains the specified tags.
         It does this by changing the active attribute on the entity to True.
         '''
         sprites = self._find_tags(*tags)
@@ -261,7 +262,7 @@ class World(pygame.sprite.Group):
     )
     def deactivate_tags(self, *tags) -> list:
         ''' 
-        Deactivate the sprites that contains the specified tags.
+        Deactivates the sprites that contains the specified tags.
         It does this by changing the active attribute on the entity to False.
         '''
         sprites = self._find_tags(*tags)

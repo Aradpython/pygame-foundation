@@ -1,0 +1,89 @@
+site_name: pygame-foundation
+site_description: A foundation for building Pygame projects and games.
+site_author: Aradpython
+
+theme:
+  name: material
+  
+  features:
+    - content.code.copy
+    - navigation.top
+    - search.highlight
+
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to dark mode
+
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/weather-night
+        name: Switch to light mode
+
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: false
+            docstring_style: google
+
+markdown_extensions:
+  - attr_list
+  - md_in_html
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+nav:
+  - Home: index.md
+  - Getting Started:
+    - Installation: getting-started/installation.md
+    - Quick Start: getting-started/quick-start.md
+
+  - Guides:
+    - Game Class: guides/game.md
+    - Worlds: guides/world.md
+    - Entities: guides/entity.md
+    - Inputs: guides/inputs.md
+    - Scenes: guides/scenes.md
+    - Camera: guides/camera.md
+    - Assets: guides/assets.md
+    - Collisions: guides/collisions.md
+    - Timers: guides/timers.md
+    - Debugging & Logging: guides/debug_log.md
+
+  - API Reference:
+      - Game: api/game.md
+      - World: api/world.md
+      - Entity: api/entity.md
+      - Camera: api/camera.md
+      - Debugging & Logging: api/debug.md
+
+      - Assets:
+          - Image Assets: api/assets/images.md
+          - Asset Manager: api/assets/manager.md
+
+      - Collisions:
+          - Collision: api/collisions/collision.md
+          - Collision Manager: api/collisions/manager.md
+
+      - Inputs:
+          - Input Binding: api/inputs/binding.md
+          - Input Context: api/inputs/context.md
+          - Input Manager: api/inputs/manager.md
+          - Input Type: api/inputs/type.md
+
+      - Scenes:
+          - Scene Manager: api/scenes/manager.md
+          - Scene: api/scenes/scene.md
+          - Scene Status: api/scenes/status.md
+
+      - Timers:
+          - Timer Manager: api/timers/manager.md
+          - Timer: api/timers/timer.md

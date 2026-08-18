@@ -2,7 +2,7 @@ from pygame_foundation.utils import debug_and_log
 import pygame
 
 class Camera:
-    ''' A class to handle camera movements '''
+    ''' A class to handle camera views and camera movements. '''
     def __init__(self, position:tuple[int, int], window_width, window_height):
         ''' Initiliazes the Camera class '''
         self.position = pygame.Vector2(position)
@@ -12,6 +12,7 @@ class Camera:
 
     @property
     def x(self):
+        ''' The x world coordinates of the camera'''
         return self.position.x
 
     @x.setter
@@ -20,6 +21,7 @@ class Camera:
 
     @property
     def y(self):
+        ''' The y world coordinates of the camera'''
         return self.position.y
 
     @y.setter
@@ -27,7 +29,7 @@ class Camera:
         self.position.y = value
 
     def move(self, dx, dy):
-        ''' Move the camera. dx and dy are distance-x and -y '''
+        ''' Move the camera. dx and dy are distance-x and distance-y '''
         self.x += dx
         self.y += dy
 
@@ -36,6 +38,7 @@ class Camera:
         return rect.move(-self.x, -self.y)
 
     def update(self):
+        ''' Updates the camera. '''
         if self._follow is not None:
             self.position.update(
                 self._follow.rect.centerx - self.window_width // 2,
@@ -47,6 +50,7 @@ class Camera:
         self._follow = sprite
 
     def stop_following(self):
+        ''' Makes the camera stop following anything. '''
         followed = self._follow
         self._follow = None
         return followed

@@ -11,9 +11,9 @@ import pygame
 
 
 class Game:
-    ''' A class that acts as a manager for all events in the game '''
+    ''' A class that acts as a manager for all events in the game.  '''
     def __init__(self, window_width:int, window_height:int, caption:str, fps:int, camera_position:tuple[int, int]=(0, 0)):
-        ''' Initialize the Game class and pygame '''
+        ''' Initializes the Game class and pygame. As well as all the Managers and Camera. '''
         pygame.init()
 
         self.window_width = window_width
@@ -33,14 +33,14 @@ class Game:
         self.timer_manager = TimerManager()
 
     def update(self, dt, events):
-        ''' Update the Game '''
+        ''' Updates the Game '''
         self.timer_manager.update(dt)
         self.camera.update()
         self.scene_manager.update(dt, events)
         self.collision_manager.update()
 
     def run(self):
-        ''' Run the Game '''
+        ''' Runs the Game '''
         self.running = True
         while self.running:
             dt = self.clock.tick(self.fps) / 1000.0
