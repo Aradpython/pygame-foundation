@@ -6,7 +6,7 @@ A foundation for building Pygame projects and games.
 
 The project is currently in active development, and additional features are planned for future releases.
 
-**Latest version: 0.1.9**
+**Latest version: 0.2.0**
 
 ## Documentation
 [here]:https://aradpython.github.io/pygame-foundation/
